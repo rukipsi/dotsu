@@ -1,0 +1,17 @@
+# SETUP: Ignore build artifacts
+target/
+
+# SETUP: Exclude root assets
+root/.local/
+
+# SETUP: Exclude user assets
+user/.config/wallpapers/
+user/patches/
+
+# SETUP: Define foot shadowing rules
+user/.config/foot/*
+!user/.config/foot/*.example
+
+# SETUP: Define hyprland shadowing rules
+user/.config/hypr/*
+!user/.config/hypr/*.example

@@ -1,0 +1,13 @@
+anki
+blender
+ddcutil
+discord
+hyprlauncher
+imv
+mpv
+obsidian
+openrgb
+qbittorrent
+rust
+shfmt
+yazi

@@ -1,0 +1,7 @@
+# REF: https://wiki.hypr.land/Hypr-Ecosystem/hyprpaper/
+
+wallpaper {
+	monitor = 
+	path = ~/.config/wallpapers/wallpaper.jpg
+	fit_mode = cover
+}

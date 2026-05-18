@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+# SETUP: Import utilities
+source "$(dirname "${BASH_SOURCE[0]}")/../../../../lib/utils.sh"
+
+# IO: Read commit message from the input file
+read -r header <"$1"
+
+# SETUP: Initialize validation state
+errors=0
+
+# LOGIC: Validate the maximum header length
+if ((${#header} > 100)); then
+	log_error "header must not be longer than 100 characters, found ${#header} [header-max-length]"
+	((errors++))
+fi
+
+# LOGIC: Parse and validate the commit structure
+if [[ "$header" != *":"* ]]; then
+	log_error "type may not be empty [type-empty]"
+	log_error "subject may not be empty [subject-empty]"
+	((errors++))
+else
+	type_and_scope="${header%%:*}"
+	subject="${header#*:}"
+	subject="${subject# }"
+	type="${type_and_scope%%(*}"
+
+	# LOGIC: Validate type
+	if [[ -z "$type" || "$type" =~ ^[[:space:]]+$ ]]; then
+		log_error "type may not be empty [type-empty]"
+		((errors++))
+	else
+		if [[ "$type" =~ [A-Z] ]]; then
+			log_error "type must be lower case [type-case]"
+			((errors++))
+		fi
+		if [[ ! "$type" =~ ^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)$ ]]; then
+			log_error "type must be one of [build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test] [type-enum]"
+			((errors++))
+		fi
+	fi
+
+	# LOGIC: Validate subject
+	if [[ -z "$subject" || "$subject" =~ ^[[:space:]]+$ ]]; then
+		log_error "subject may not be empty [subject-empty]"
+		((errors++))
+	else
+		if [[ "$subject" =~ ^[A-Z] ]]; then
+			log_error "subject must not be sentence-case [subject-case]"
+			((errors++))
+		fi
+		if [[ "$subject" =~ \.$ ]]; then
+			log_error "subject may not end with full stop [subject-full-stop]"
+			((errors++))
+		fi
+	fi
+fi
+
+# WRAP: Abort the commit process if any validation rules failed
+if ((errors > 0)); then
+	printf "\nFound %d problems, commit aborted\n" "$errors" >&2
+	exit 1
+fi

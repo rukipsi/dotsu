@@ -1,0 +1,7 @@
+antigravity
+mediatek-mt7927-dkms
+notion-app-electron
+proton-pass-bin
+seanime-bin
+spotify
+zen-browser-bin

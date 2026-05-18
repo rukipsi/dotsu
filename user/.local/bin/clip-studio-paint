@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+export WINEPREFIX="$HOME/.wine-csp"
+export WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS="--no-sandbox"
+
+wine explorer /desktop=CSP,3840x2160 "C:\Program Files\CELSYS\CLIP STUDIO 1.5\CLIP STUDIO PAINT\CLIPStudioPaint.exe"

@@ -1,0 +1,84 @@
+-- REF: https://wiki.hypr.land/Configuring/
+
+-- SETUP: Set monitor output
+hl.monitor({
+	output = "DP-5",
+	mode = "3840x2160@120",
+	position = "0x0",
+	scale = "1.5",
+})
+
+-- SETUP: Define application pairs
+local anki = { "anki", "anki" }
+local blender = { "blender", "blender" }
+local browser = { "zen-browser", "zen" }
+local csp = { "clip-studio-paint", "explorer.exe" }
+local ide = { "antigravity", "antigravity" }
+local launcher = { "hyprlauncher", "" }
+local terminal = { "foot", "foot" }
+local yazi = { terminal[1] .. " yazi", "foot" }
+
+-- SETUP: Define special workspace pairs
+local discord = { "discord", "discord" }
+local notion = { "notion-app", "Notion" }
+local obsidian = { "obsidian", "obsidian" }
+local pass = { "proton-pass", "Proton Pass" }
+local spotify = { "spotify", "Spotify" }
+local tuxbox = { "tuxbox-gui", "tuxbox-gui" }
+
+-- SETUP: Define utility and background pairs
+local anime = { "seanime", "foot" }
+local video = { "mpv", "mpv" }
+local picker = { "hyprpicker", "" }
+local torrent = { "qbittorrent", "org.qbittorrent.qBittorrent" }
+local wine = { "", "explorer.exe" }
+
+local mainMod = "SUPER"
+
+-- SETUP: Initialize environment and background services
+hl.on("hyprland.start", function()
+	-- SETUP: Start background services
+	hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+	hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
+	hl.exec_cmd(launcher[1] .. " -d")
+	hl.exec_cmd("openrgb --profile active --startminimized")
+	hl.exec_cmd("pw-loopback --playback-props='media.class=Audio/Source node.name=vmic_fake node.description=\"Void\"'")
+
+	-- IO: Load persistent applications
+	hl.exec_cmd(torrent[1])
+	hl.exec_cmd(anime[1])
+end)
+
+-- UI: Bind application and workspace shortcuts
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(anki[1]))
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(blender[1]))
+hl.bind(mainMod .. " + C", hl.dsp.exec_cmd(picker[1]))
+hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(yazi[1]))
+hl.bind(mainMod .. " + I", hl.dsp.exec_cmd(ide[1]))
+hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(launcher[1]))
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(csp[1]))
+hl.bind(mainMod .. " + Z", hl.dsp.exec_cmd(browser[1]))
+
+hl.bind(mainMod .. " + D", hl.dsp.workspace.toggle_special(discord[2]))
+hl.bind(mainMod .. " + G", hl.dsp.workspace.toggle_special(tuxbox[2]))
+hl.bind(mainMod .. " + N", hl.dsp.workspace.toggle_special(notion[2]))
+hl.bind(mainMod .. " + O", hl.dsp.workspace.toggle_special(obsidian[2]))
+hl.bind(mainMod .. " + P", hl.dsp.workspace.toggle_special(pass[2]))
+hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special(spotify[2]))
+hl.bind(mainMod .. " + V", hl.dsp.workspace.toggle_special(video[2]))
+
+-- UI: Define workspace routing rules
+hl.window_rule({ match = { class = browser[2] }, workspace = "1" })
+hl.window_rule({ match = { class = csp[2] }, workspace = "2" })
+hl.window_rule({ match = { class = ide[2] }, workspace = "3" })
+
+hl.window_rule({ match = { class = discord[2] }, workspace = "special:" .. discord[2] })
+hl.window_rule({ match = { class = notion[2] }, workspace = "special:" .. notion[2] })
+hl.window_rule({ match = { class = obsidian[2] }, workspace = "special:" .. obsidian[2] })
+hl.window_rule({ match = { class = pass[2] }, workspace = "special:" .. pass[2] })
+hl.window_rule({ match = { class = spotify[2] }, workspace = "special:" .. spotify[2] })
+hl.window_rule({ match = { class = tuxbox[2] }, workspace = "special:" .. tuxbox[2] })
+hl.window_rule({ match = { class = video[2] }, workspace = "special:" .. video[2] })
+
+hl.window_rule({ match = { class = torrent[2] }, workspace = "special silent" })
+hl.window_rule({ match = { class = wine[2], title = "^Wine Desktop$" }, workspace = "special silent" })
