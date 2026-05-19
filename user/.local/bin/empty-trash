@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# SETUP: Import utilities
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../../lib/utils.sh"
+
+# UI: Prompt the user for confirmation
+log_info "Are you sure you want to permanently empty the trash? (y/N):"
+read -r response
+
+# LOGIC: Parse response and empty trash if confirmed
+if [[ "$response" =~ ^[Yy]$ ]]; then
+	# IO: Empty the local trash directories
+	rm -rf "$HOME/.local/share/Trash/files/"*
+	rm -rf "$HOME/.local/share/Trash/info/"*
+	log_success "Trash emptied successfully"
+else
+	log_info "Operation canceled"
+fi
