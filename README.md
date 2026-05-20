@@ -44,7 +44,7 @@ This project uses a `root` + `user` architecture:
 2. Run the root installer:
 	```bash
 	cd ~/dotsu/root/scripts
-	./root-install.sh
+	./install.sh
 	```
 3. Reboot the system:
 	```bash
@@ -64,14 +64,14 @@ If you have a fork, ensure your changes are pushed; otherwise, edit the local fi
 2. Apply the customization:
 	```bash
 	cd ~/dotsu/user/scripts
-	./user-install.sh
+	./install.sh
 	```
 3. Run optional component scripts as needed:
-	- `./config-git.sh`: Apply conventional commits hook for git commit messages.
-	- `./config-keyring.sh`: Configure GNOME Keyring.
-	- `./config-wireplumber.sh`: Apply Bluetooth autoswitch fixes.
-	- `./install-csp.sh`: Install Clip Studio Paint (Wine).
-	- `./install-tuxbox.sh`: Install TuxBox (for TourBox Controller).
+	- `./apps/clip-studio-paint.sh`: Install Clip Studio Paint (Wine).
+	- `./apps/tuxbox.sh`: Install TuxBox (for TourBox Controller).
+	- `./setup/git.sh`: Apply conventional commits hook for git commit messages.
+	- `./setup/keyring.sh`: Configure GNOME Keyring.
+	- `./setup/wireplumber.sh`: Apply Bluetooth autoswitch fixes.
 
 ## Specifications
 

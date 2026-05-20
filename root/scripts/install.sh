@@ -72,7 +72,5 @@ ln -sfn "$DOTFILES_DIR/root/.local/share/icons/Bibata-Modern-Ice" "$HOME/.local/
 ln -sfn "$DOTFILES_DIR/root/.local/share/icons/Bibata-Modern-Ice-Hypr" "$HOME/.local/share/icons/Bibata-Modern-Ice-Hypr"
 
 # UI: Display successful completion and next steps
-echo ""
 log_success "Root environment setup complete"
 log_info "Please reboot your system to apply all changes"
-echo ""

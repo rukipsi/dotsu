@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # SETUP: Import utilities
-source "$(dirname "${BASH_SOURCE[0]}")/../../lib/utils.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../../lib/utils.sh"
 
 # SETUP: Define Wine environment
 export WINEPREFIX="$HOME/.wine-csp"
@@ -67,7 +67,5 @@ wine reg add "HKCU\Software\Wine\AppDefaults\CLIPStudioPaint.exe" /v Version /t 
 wineserver -k
 
 # UI: Display completion status and launch instructions
-echo ""
-log_success "Installation Complete!"
-log_info 'Launch your virtual desktop using: WINEPREFIX="$HOME/.wine-csp" wine explorer /desktop=CS,3840x2160 "$HOME/.wine-csp/drive_c/Program Files/CELSYS/CLIP STUDIO 1.5/CLIP STUDIO/CLIPStudio.exe"'
-echo ""
+log_success "Clip Studio Paint installed successfully"
+log_info 'Launch the application using: WINEPREFIX="$HOME/.wine-csp" wine explorer /desktop=CS,3840x2160 "$HOME/.wine-csp/drive_c/Program Files/CELSYS/CLIP STUDIO 1.5/CLIP STUDIO/CLIPStudio.exe"'

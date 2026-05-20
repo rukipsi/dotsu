@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # SETUP: Import utilities
-source "$(dirname "${BASH_SOURCE[0]}")/../../lib/utils.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../../lib/utils.sh"
 
 # SETUP: Define installation path
 INSTALL_DIR="$HOME/.local/share/tuxbox"
