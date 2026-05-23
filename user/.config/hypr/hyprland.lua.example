@@ -1,6 +1,6 @@
 -- REF: https://wiki.hypr.land/Configuring/
 
--- SETUP: Set monitor output
+-- SETUP: Configure monitor output
 hl.monitor({
 	output = "DP-5",
 	mode = "3840x2160@120",
@@ -8,15 +8,21 @@ hl.monitor({
 	scale = "1.5",
 })
 
+-- SETUP: Define utility and background pairs
+local anime = { "seanime", "foot" }
+local launcher = { "hyprlauncher", "" }
+local picker = { "hyprpicker", "" }
+local torrent = { "qbittorrent", "org.qbittorrent.qBittorrent" }
+local wine = { "", "explorer.exe" }
+
 -- SETUP: Define application pairs
 local anki = { "anki", "anki" }
 local blender = { "blender", "blender" }
 local browser = { "zen-browser", "zen" }
 local csp = { "clip-studio-paint", "explorer.exe" }
-local ide = { "antigravity", "antigravity" }
-local launcher = { "hyprlauncher", "" }
+local ide = { 'antigravity-ide --password-store="gnome-libsecret"', "antigravity-ide" }
 local terminal = { "foot", "foot" }
-local yazi = { terminal[1] .. " yazi", "foot" }
+local yazi = { terminal[1] .. " -o colors.alpha=1.0 yazi", "foot" }
 
 -- SETUP: Define special workspace pairs
 local discord = { "discord", "discord" }
@@ -25,20 +31,15 @@ local obsidian = { "obsidian", "obsidian" }
 local pass = { "proton-pass", "Proton Pass" }
 local spotify = { "spotify", "Spotify" }
 local tuxbox = { "tuxbox-gui", "tuxbox-gui" }
-
--- SETUP: Define utility and background pairs
-local anime = { "seanime", "foot" }
 local video = { "mpv", "mpv" }
-local picker = { "hyprpicker", "" }
-local torrent = { "qbittorrent", "org.qbittorrent.qBittorrent" }
-local wine = { "", "explorer.exe" }
 
 local mainMod = "SUPER"
 
 -- SETUP: Initialize environment and background services
 hl.on("hyprland.start", function()
 	-- SETUP: Start background services
-	hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+	hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GTK_THEME=Adwaita:dark")
+	hl.exec_cmd("killall -9 xdg-desktop-portal-gtk xdg-desktop-portal")
 	hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
 	hl.exec_cmd(launcher[1] .. " -d")
 	hl.exec_cmd("openrgb --profile active --startminimized")
@@ -50,14 +51,15 @@ hl.on("hyprland.start", function()
 end)
 
 -- UI: Bind application and workspace shortcuts
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(anki[1]))
-hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(blender[1]))
+hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(launcher[1]))
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd(picker[1]))
+
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(anki[1]))
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser[1]))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(yazi[1]))
 hl.bind(mainMod .. " + I", hl.dsp.exec_cmd(ide[1]))
-hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(launcher[1]))
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(blender[1]))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(csp[1]))
-hl.bind(mainMod .. " + Z", hl.dsp.exec_cmd(browser[1]))
 
 hl.bind(mainMod .. " + D", hl.dsp.workspace.toggle_special(discord[2]))
 hl.bind(mainMod .. " + G", hl.dsp.workspace.toggle_special(tuxbox[2]))
@@ -67,7 +69,7 @@ hl.bind(mainMod .. " + P", hl.dsp.workspace.toggle_special(pass[2]))
 hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special(spotify[2]))
 hl.bind(mainMod .. " + V", hl.dsp.workspace.toggle_special(video[2]))
 
--- UI: Define workspace routing rules
+-- UI: Bind applications to workspaces
 hl.window_rule({ match = { class = browser[2] }, workspace = "1" })
 hl.window_rule({ match = { class = csp[2] }, workspace = "2" })
 hl.window_rule({ match = { class = ide[2] }, workspace = "3" })
