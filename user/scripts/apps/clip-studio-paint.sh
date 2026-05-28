@@ -7,6 +7,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../../lib/utils.sh"
 # SETUP: Define Wine environment
 export WINEPREFIX="$HOME/.wine-csp"
 export WINEARCH=win64
+export WINEDEBUG=-all
 
 # SETUP: Define installer URLs
 CSP_URL="https://vd.clipstudio.net/clipcontent/paint/app/308/CSP_308w_setup.exe"
@@ -18,12 +19,29 @@ sudo pacman -S --needed --noconfirm cabextract gst-plugins-good gst-plugins-bad 
 
 # SETUP: Initialize Wine prefix
 log_info "Initializing Wine prefix at $WINEPREFIX..."
-wineboot --init
+wineboot --init >/dev/null 2>&1
 
-# SETUP: Apply 4K scaling (144 DPI)
-log_info "Applying Wine registry fixes..."
+# IO: Install Windows components via winetricks
+log_info "Installing Windows components (this may take a while)..."
+winetricks -q corefonts cjkfonts vcrun2022 dotnet48 dxvk vkd3d >/dev/null 2>&1
+
+# LOGIC: Get current resolution and calculate DPI scaling
+RESOLUTION=$(hyprctl monitors | awk '/[0-9]x[0-9]/ {split($1, a, "@"); print a[1]; exit}')
+RESOLUTION=${RESOLUTION:-1920x1080}
+HEIGHT=$(echo "$RESOLUTION" | cut -d'x' -f2)
+
+if [ "${HEIGHT}" -ge 2160 ]; then
+	DPI=144
+elif [ "${HEIGHT}" -ge 1440 ]; then
+	DPI=120
+else
+	DPI=96
+fi
+
+# SETUP: Apply registry scaling and Windows version
+log_info "Applying Wine registry fixes (scaling at ${DPI} DPI)..."
 wine reg add "HKCU\Software\Wine" /v Version /t REG_SZ /d "win10" /f
-wine reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v LogPixels /t REG_DWORD /d 144 /f
+wine reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v LogPixels /t REG_DWORD /d "$DPI" /f
 
 # SETUP: Configure DLL overrides to fix UI glitches
 log_info "Configuring launcher fixes..."
@@ -32,11 +50,6 @@ wine reg add "HKCU\Software\Wine\AppDefaults\CLIPStudio.exe\DllOverrides" /v "dc
 wine reg add "HKCU\Software\Wine\AppDefaults\CLIPStudio.exe\DllOverrides" /v "libwinpthread-1" /t REG_SZ /d "native" /f
 wine reg add "HKCU\Software\Wine\DllOverrides" /v "dcomp" /t REG_SZ /d "native,builtin" /f
 wine reg add "HKCU\Software\Wine\DllOverrides" /v "concrt140" /t REG_SZ /d "native,builtin" /f
-wine reg add "HKCU\Software\Wine\AppDefaults\CLIPStudio.exe" /v "WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS" /t REG_SZ /d "--disable-gpu --no-sandbox" /f
-
-# IO: Install Windows components via winetricks
-log_info "Installing Windows components (this may take a while)..."
-winetricks -q corefonts cjkfonts vcrun2022 dotnet48 dxvk vkd3d
 
 # IO: Download and inject missing custom patches required for Wine compatibility
 if [ ! -d "$DOTFILES_DIR/user/patches/csp" ]; then
@@ -49,10 +62,10 @@ cp "$DOTFILES_DIR/user/patches/csp/libwinpthread-1.dll" "$WINEPREFIX/drive_c/win
 # IO: Execute application installers
 log_info "Installing Microsoft Edge WebView2..."
 curl -L "$WEBVIEW_URL" -o /tmp/webview2_setup.exe
-wine /tmp/webview2_setup.exe
+wine /tmp/webview2_setup.exe >/dev/null 2>&1
 log_info "Installing Clip Studio Paint v3..."
 curl -L "$CSP_URL" -o /tmp/csp_setup.exe
-WINEDLLOVERRIDES="winemenubuilder.exe=d" wine /tmp/csp_setup.exe
+WINEDLLOVERRIDES="winemenubuilder.exe=d" wine /tmp/csp_setup.exe >/dev/null 2>&1
 
 # WRAP: Remove temporary installers
 rm -f /tmp/webview2_setup.exe /tmp/csp_setup.exe
@@ -68,4 +81,5 @@ wineserver -k
 
 # UI: Display completion status and launch instructions
 log_success "Clip Studio Paint installed successfully"
-log_info 'Launch the application using: WINEPREFIX="$HOME/.wine-csp" wine explorer /desktop=CS,3840x2160 "$HOME/.wine-csp/drive_c/Program Files/CELSYS/CLIP STUDIO 1.5/CLIP STUDIO/CLIPStudio.exe"'
+log_info "Launch the application using the command below:"
+echo "WINEPREFIX=\"$WINEPREFIX\" WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=\"--no-sandbox\" wine explorer /desktop=CSP,${RESOLUTION} \"C:\\Program Files\\CELSYS\\CLIP STUDIO 1.5\\CLIP STUDIO PAINT\\CLIPStudioPaint.exe\""
