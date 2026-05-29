@@ -31,7 +31,7 @@ This project uses a `root` + `user` architecture:
 	- **Profile:** `minimal`.
 	- **Applications:** Enable Bluetooth and select `pipewire` for Audio.
 	- **Network configuration:** Select `Copy ISO network configuration to installation`.
-	- **Additional packages:** `git` and your specific GPU drivers (e.g., `nvidia-open-dkms`).
+	- **Additional packages:** `git`, `iwd`, and your specific GPU drivers (e.g., `nvidia-open-dkms`).
 	- **Timezone:** Set your local timezone.
 3. Complete the installation and reboot.
 
