@@ -71,6 +71,10 @@ ln -sf "$DOTFILES_DIR/root/.config/hypr/hyprpaper.conf" "$HOME/.config/hypr/hypr
 ln -sfn "$DOTFILES_DIR/root/.local/share/icons/Bibata-Modern-Ice" "$HOME/.local/share/icons/Bibata-Modern-Ice"
 ln -sfn "$DOTFILES_DIR/root/.local/share/icons/Bibata-Modern-Ice-Hypr" "$HOME/.local/share/icons/Bibata-Modern-Ice-Hypr"
 
+# IO: Enable network services
+log_info "Enabling network services..."
+sudo systemctl enable --now iwd
+
 # UI: Display successful completion and next steps
 log_success "Root environment setup complete"
 log_info "Please reboot your system to apply all changes"
