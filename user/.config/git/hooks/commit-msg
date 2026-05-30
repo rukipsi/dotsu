@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
 # SETUP: Import utilities
-source "$(dirname "${BASH_SOURCE[0]}")/../../../../lib/utils.sh"
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../../../lib/utils.sh"
 
 # IO: Read commit message from the input file
 read -r header <"$1"
+
+# LOGIC: Skip validation for automatically generated git commits
+if [[ "$header" =~ ^(fixup|squash|amend)\! ]]; then
+	exit 0
+fi
 
 # SETUP: Initialize validation state
 errors=0
