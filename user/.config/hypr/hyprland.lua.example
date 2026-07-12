@@ -22,11 +22,11 @@ local browser = { "zen-browser", "zen" }
 local csp = { "clip-studio-paint", "explorer.exe" }
 local ide = { 'antigravity-ide --password-store="gnome-libsecret"', "antigravity-ide" }
 local terminal = { "foot", "foot" }
-local yazi = { terminal[1] .. " -o colors.alpha=1.0 yazi", "foot" }
+local yazi = { terminal[1] .. " -o colors.alpha=1.0 yazi /data", "foot" }
 
 -- SETUP: Define special workspace pairs
 local discord = { "discord", "discord" }
-local notion = { "notion-app", "Notion" }
+local notion = { "notion-app", "notion" }
 local obsidian = { "obsidian", "obsidian" }
 local pass = { "proton-pass", "Proton Pass" }
 local spotify = { "spotify", "Spotify" }
@@ -54,13 +54,13 @@ end)
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd(launcher[1]))
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd(picker[1]))
 
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(anki[1]))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser[1]))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(yazi[1]))
 hl.bind(mainMod .. " + I", hl.dsp.exec_cmd(ide[1]))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(blender[1]))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(csp[1]))
 
+hl.bind(mainMod .. " + A", hl.dsp.workspace.toggle_special(anki[2]))
 hl.bind(mainMod .. " + D", hl.dsp.workspace.toggle_special(discord[2]))
 hl.bind(mainMod .. " + G", hl.dsp.workspace.toggle_special(tuxbox[2]))
 hl.bind(mainMod .. " + N", hl.dsp.workspace.toggle_special(notion[2]))
@@ -69,11 +69,15 @@ hl.bind(mainMod .. " + P", hl.dsp.workspace.toggle_special(pass[2]))
 hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special(spotify[2]))
 hl.bind(mainMod .. " + V", hl.dsp.workspace.toggle_special(video[2]))
 
+hl.unbind("Print")
+hl.bind("Print", hl.dsp.exec_cmd([[if [ -d /data/SCREENSHOTS ]; then grim /data/SCREENSHOTS/screenshot_$(date +%F_%T).png; else mkdir -p ~/Pictures/Screenshots && grim ~/Pictures/Screenshots/screenshot_$(date +%F_%T).png; fi]]))
+
 -- UI: Bind applications to workspaces
 hl.window_rule({ match = { class = browser[2] }, workspace = "1" })
 hl.window_rule({ match = { class = csp[2] }, workspace = "2" })
 hl.window_rule({ match = { class = ide[2] }, workspace = "3" })
 
+hl.window_rule({ match = { class = anki[2] }, workspace = "special:" .. anki[2] })
 hl.window_rule({ match = { class = discord[2] }, workspace = "special:" .. discord[2] })
 hl.window_rule({ match = { class = notion[2] }, workspace = "special:" .. notion[2] })
 hl.window_rule({ match = { class = obsidian[2] }, workspace = "special:" .. obsidian[2] })
