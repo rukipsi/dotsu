@@ -5,6 +5,8 @@ discord
 hyprlauncher
 imv
 mpv
+nodejs
+npm
 obsidian
 openrgb
 qbittorrent
