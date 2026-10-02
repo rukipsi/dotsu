@@ -137,7 +137,7 @@ hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("foot"))
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd('grim -g "$(slurp)" - | wl-copy'))
-hl.bind("Print", hl.dsp.exec_cmd('mkdir -p ~/Pictures/Screenshots && grim ~/Pictures/Screenshots/screenshot_$(date +%F_%T).png'))
+hl.bind("Print", hl.dsp.exec_cmd('d=~/SCREENSHOTS; [ -d "$d" ] || d=~/Pictures/Screenshots; mkdir -p "$d" && grim "$d/screenshot_$(date +%F_%T).png"'))
 
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
